@@ -35,8 +35,8 @@ auto VertexShader(const auto& projection_mat, const auto& model_view_mat,
 
 auto FragmentShader(Vec n, Vec l, Vec v) -> Vec {
     Vec r = normalize(2.0 * dot(n, l) * n - l);
-    Vec diffuse = kLightColor * std::max(0., dot(n, l));
-    Vec specular = Vec({1, 1, 1}) * std::pow(std::max(0., dot(r, v)), 8);
+    Vec diffuse = kLightColor * std::max(0.f, dot(n, l));
+    Vec specular = Vec({1, 1, 1}) * std::pow(std::max(0.f, dot(r, v)), 8);
     return 0.4 * diffuse + 0.4 * specular + 0.1 * kLightColor;
 }
 
@@ -51,12 +51,12 @@ void Rasterize(const auto& projection_mat, const auto& model_view_mat, const aut
 
     // Discard triangles behind camera
     if (v0_[2] < 0 || v1_[2] < 0 || v2_[2] < 0) return;
-    
+
     v0_ /= v0_[3]; v1_ /= v1_[3]; v2_ /= v2_[3];
-    
+
     // Backface culling
     if (cross(v1_ - v0_, v2_ - v0_)[2] < 0) return;
-    
+
     // Window to screen coordinates
     v0_[0] = (v0_[0] + 1) * W / 2; v0_[1] = (v0_[1] + 1) * H / 2;
     v1_[0] = (v1_[0] + 1) * W / 2; v1_[1] = (v1_[1] + 1) * H / 2;
@@ -71,9 +71,9 @@ void Rasterize(const auto& projection_mat, const auto& model_view_mat, const aut
     #pragma omp parallel for collapse(2)
     for (auto y = y_min; y < y_max; y++) {
         for (auto x = x_min; x < x_max; x++) {
-            auto [u, v, w] = Barycentric(xy(v0_), xy(v1_), xy(v2_), {(double)x, (double)y, 0, 0});
+            auto [u, v, w] = Barycentric(xy(v0_), xy(v1_), xy(v2_), {(float)x, (float)y, 0, 0});
             if (u < 0 || v < 0 || w < 0) continue;
-            
+
             // Z-buffer check
             Vec s = v0_ * u + v1_ * v + v2_ * w;
             if (isnan(s[2]) || s[2] > depth[y * W + x]) continue;
@@ -84,9 +84,9 @@ void Rasterize(const auto& projection_mat, const auto& model_view_mat, const aut
             Vec p = p0_ * u + p1_ * v + p2_ * w;
 
             Vec color = FragmentShader(n, l, p);
-            auto r = (int)std::clamp(color[0] * 255, 0., 255.);
-            auto g = (int)std::clamp(color[1] * 255, 0., 255.);
-            auto b = (int)std::clamp(color[2] * 255, 0., 255.);
+            auto r = (int)std::clamp(color[0] * 255, 0.f, 255.f);
+            auto g = (int)std::clamp(color[1] * 255, 0.f, 255.f);
+            auto b = (int)std::clamp(color[2] * 255, 0.f, 255.f);
             pixels[W * H - (y * W + x) - 1] = 0xff << 24 | r << 16 | g << 8 | b;
         }
     }
@@ -160,7 +160,7 @@ int main(int argc, char **argv) {
 
     auto camera_orientation = Quaternion::FromEuler(0, 0, 0);
     Vec camera_position({0, 0, 0, 1});
-    
+
     unsigned pixels[W * H];
     double depth[W * H];
 

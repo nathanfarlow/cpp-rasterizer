@@ -2,7 +2,7 @@
 
 namespace gfx {
 
-auto dot(const Vec& a, const Vec& b) -> double { return (a * b).sum(); }
+auto dot(const Vec& a, const Vec& b) -> float { return (a * b).sum(); }
 auto normalize(const Vec& v) -> Vec { return v / sqrt((v * v).sum()); }
 auto xy(const Vec& v) -> Vec  { return {v[0], v[1], 0, 0}; }
 auto xyz(const Vec& v) -> Vec { return {v[0], v[1], v[2], 0}; }
@@ -31,9 +31,9 @@ auto Mat4::Transpose() const -> Mat4 {
     return r;
 }
 
-auto Quaternion::FromEuler(double x, double y, double z) -> Quaternion {
-    auto cy = cos(z * 0.5), sy = sin(z * 0.5), cp = cos(y * 0.5);
-    auto sp = sin(y * 0.5), cr = cos(x * 0.5), sr = sin(x * 0.5);
+auto Quaternion::FromEuler(float x, float y, float z) -> Quaternion {
+    auto cy = cosf(z * 0.5), sy = sinf(z * 0.5), cp = cosf(y * 0.5);
+    auto sp = sinf(y * 0.5), cr = cosf(x * 0.5), sr = sinf(x * 0.5);
 
     return {cy * cp * cr + sy * sp * sr, cy * cp * sr - sy * sp * cr,
             sy * cp * sr + cy * sp * cr, sy * cp * cr - cy * sp * sr};

@@ -9,8 +9,8 @@ namespace gfx {
  * which holds a dangling reference to an expired temporary"
  * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=83860
  */
-typedef std::valarray<double> Vec;
-auto dot(const Vec& a, const Vec& b) -> double;
+typedef std::valarray<float> Vec;
+auto dot(const Vec& a, const Vec& b) -> float;
 auto normalize(const Vec& v) -> Vec;
 auto cross(const Vec& a, const Vec& b) -> Vec;
 auto xy(const Vec& v) -> Vec;
@@ -31,11 +31,11 @@ struct Mat4 {
 };
 
 struct Quaternion {
-    double w, x, y, z;
+    float w, x, y, z;
 
-    static auto FromEuler(double x, double y, double z) -> Quaternion;
-    
-    Quaternion(double w, double x, double y, double z) : w(w), x(x), y(y), z(z) {}
+    static auto FromEuler(float x, float y, float z) -> Quaternion;
+
+    Quaternion(float w, float x, float y, float z) : w(w), x(x), y(y), z(z) {}
 
     auto operator*(const Quaternion& q) const -> Quaternion;
     auto AsMatrix() -> Mat4;

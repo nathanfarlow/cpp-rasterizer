@@ -34,7 +34,7 @@ Model::Model(const std::string& filename) {
             auto base = parse_vertex().value();
 
             face.push_back(parse_vertex().value());
-            
+
             // Load triangle fan
             while (true) {
                 auto v = parse_vertex();
@@ -60,9 +60,9 @@ void Model::ComputeNormals() {
 }
 
 auto Model::ComputeBoundingBox() const -> std::tuple<Vec, Vec> {
-    Vec min(std::numeric_limits<double>::max(), 3),
-        max(std::numeric_limits<double>::lowest(), 3);
-    
+    Vec min(std::numeric_limits<float>::max(), 3),
+        max(std::numeric_limits<float>::lowest(), 3);
+
     for (const auto& v : vertices_) {
         for (auto i = 0; i < 3; i++) {
             min[i] = std::min(min[i], v->pos[i]);
